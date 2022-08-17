@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/jcardenasc93/go-webapp/pkg/config"
+	"github.com/jcardenasc93/go-webapp/pkg/models"
 	"github.com/jcardenasc93/go-webapp/pkg/render"
 )
 
@@ -30,10 +31,14 @@ func SetupHandlers(r *Repository) {
 // NOTE: Using receivers grant func to access receiver data
 // Home is the home handler
 func (rep Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 // About is the about handler
 func (rep Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.tmpl")
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
+		StringMap: map[string]string{
+			"greetings": "Hello from Golang",
+		},
+	})
 }

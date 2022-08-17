@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/jcardenasc93/go-webapp/pkg/config"
+	"github.com/jcardenasc93/go-webapp/pkg/models"
 )
 
 var app *config.AppConfig
@@ -16,8 +17,13 @@ func SetupTemplates(a *config.AppConfig) {
 	app = a
 }
 
+// AddDefaultTempData adds default data to template data
+func AddDefaultTempData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+
 // RenderTemplate parses a given template in the ResponseWriter
-func RenderTemplate(w http.ResponseWriter, tmplName string) {
+func RenderTemplate(w http.ResponseWriter, tmplName string, td *models.TemplateData) {
 	var tmplCache map[string]*template.Template
 	if app.UseCacheTemplates {
 		// Get template cache from app config
@@ -34,8 +40,10 @@ func RenderTemplate(w http.ResponseWriter, tmplName string) {
 		log.Fatal("Error accesing to cache map with the given key")
 	}
 
+	td = AddDefaultTempData(td)
 	// render template
-	err := tmpl.Execute(w, nil)
+	// NOTE: here td is like context object passed in Django templates
+	err := tmpl.Execute(w, td)
 	if err != nil {
 		log.Fatal(err)
 	}
