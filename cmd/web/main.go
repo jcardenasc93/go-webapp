@@ -20,14 +20,17 @@ func main() {
 	}
 	render.SetupTemplates(&app)
 
-	//NOTE: This is the way to handle requests with builtin go libs
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
-
 	log.Println(fmt.Sprintf("Starting server on %s", serverPort))
 
 	//NOTE: Here starts the server
-	http.ListenAndServe(app.Port, nil)
+	srv := &http.Server{
+		Addr:    app.Port,
+		Handler: routing(&app),
+	}
+	err = srv.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func initApp() (config.AppConfig, error) {
