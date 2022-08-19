@@ -8,6 +8,13 @@
         <p>This is a paragraph</p>
         <p>This is a paragraph</p>
         <p>Greetings: {{index .StringMap "greetings"}}
+        <p>
+          {{if ne (index .StringMap "remoteIP") ""}}
+            Hello visitor from {{index .StringMap "remoteIP"}}
+          {{else}}
+            Looks that is your first time here. Please go to <a href="/">Home page</a>
+          {{end}}
+        </p>
       </div>
     </div>
   </div>

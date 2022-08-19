@@ -31,14 +31,19 @@ func SetupHandlers(r *Repository) {
 // NOTE: Using receivers grant func to access receiver data
 // Home is the home handler
 func (rep Repository) Home(w http.ResponseWriter, r *http.Request) {
+	remoteIP := r.RemoteAddr
+	// Adds visitor remote address to session
+	rep.App.Session.Put(r.Context(), "remoteIP", remoteIP)
 	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 // About is the about handler
 func (rep Repository) About(w http.ResponseWriter, r *http.Request) {
+	stringMap := make(map[string]string)
+	// remoteIP := rep.App.Session.GetString(r.Context(), "remote_ip")
+	stringMap["greetings"] = "Hello from Golang"
+	stringMap["remoteIP"] = "aoetnhu"
 	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
-		StringMap: map[string]string{
-			"greetings": "Hello from Golang",
-		},
+		StringMap: stringMap,
 	})
 }

@@ -6,13 +6,19 @@ import (
 	"github.com/justinas/nosurf"
 )
 
+// GenCSRFToken creates middleware to generate CSRF token to secure POST requests
 func GenCSRFToken(next http.Handler) http.Handler {
 	tokenHandler := nosurf.New(next)
 	tokenHandler.SetBaseCookie(http.Cookie{
 		HttpOnly: true,
 		Path:     "/",
-		Secure:   false, // dev env not uses https
+		Secure:   app.IsProduction, // dev env not uses https
 		SameSite: http.SameSiteLaxMode,
 	})
 	return tokenHandler
+}
+
+// LoadSession load and save session for each request
+func LoadSession(next http.Handler) http.Handler {
+	return sessionMan.LoadAndSave(next)
 }
