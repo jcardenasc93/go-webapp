@@ -40,9 +40,9 @@ func (rep Repository) Home(w http.ResponseWriter, r *http.Request) {
 // About is the about handler
 func (rep Repository) About(w http.ResponseWriter, r *http.Request) {
 	stringMap := make(map[string]string)
-	// remoteIP := rep.App.Session.GetString(r.Context(), "remote_ip")
+	remoteIP := rep.App.Session.GetString(r.Context(), "remoteIP")
 	stringMap["greetings"] = "Hello from Golang"
-	stringMap["remoteIP"] = "aoetnhu"
+	stringMap["remoteIP"] = remoteIP
 	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
 	})

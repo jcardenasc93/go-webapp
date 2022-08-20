@@ -18,17 +18,10 @@ var app config.AppConfig
 var sessionMan *scs.SessionManager
 
 func main() {
-	// Initilize app based on AppConfig struct
-	app, err := initApp()
-	if err != nil {
-		return
-	}
-
 	// Session management
-	sessionMan = initSession()
-	// Allows access session from any handler
-	app.Session = sessionMan
-	render.SetupTemplates(&app)
+	initSession()
+	// Initilize app based on AppConfig struct
+	initApp()
 
 	log.Println(fmt.Sprintf("Starting server on %s", serverPort))
 
@@ -37,42 +30,40 @@ func main() {
 		Addr:    app.Port,
 		Handler: routing(&app),
 	}
-	err = srv.ListenAndServe()
+	err := srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func initApp() (config.AppConfig, error) {
-	var app config.AppConfig
+func initApp() {
 	app.Port = serverPort
+	// Allows access session from any handler
+	app.Session = sessionMan
 	app.IsProduction = false
 	// Setup templates config
 	tmplCache, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("Cannot create template cache: ", err)
-		return app, err
 	} else {
-		// Setup handlers config
-		repo := handlers.NewRepo(&app)
-		handlers.SetupHandlers(repo)
 		app.TemplateCache = tmplCache
 		// In a dev env is ok disable cache
 		app.UseCacheTemplates = false
+		// Setup handlers config
+		repo := handlers.NewRepo(&app)
+		handlers.SetupHandlers(repo)
+		// Setup templates
+		render.SetupTemplates(&app)
 	}
-
-	return app, err
 }
 
-func initSession() *scs.SessionManager {
-	sm := scs.New()
+func initSession() {
+	sessionMan = scs.New()
 	// Set life time
-	sm.Lifetime = 12 * time.Hour
+	sessionMan.Lifetime = 12 * time.Hour
 	// Persist session even when user leaves site
-	sm.Cookie.Persist = true
-	sm.Cookie.SameSite = http.SameSiteLaxMode
+	sessionMan.Cookie.Persist = true
+	sessionMan.Cookie.SameSite = http.SameSiteLaxMode
 	// Securing allows to encrypt session but only through https so on dev env doesn't apply
-	sm.Cookie.Secure = app.IsProduction
-
-	return sm
+	sessionMan.Cookie.Secure = app.IsProduction
 }
