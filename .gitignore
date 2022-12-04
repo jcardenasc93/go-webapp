@@ -16,3 +16,6 @@
 
 # asdf
 .tool-versions
+
+# static files
+static/*
