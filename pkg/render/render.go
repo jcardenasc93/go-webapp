@@ -40,7 +40,7 @@ func RenderTemplate(w http.ResponseWriter, tmplName string, td *models.TemplateD
 		log.Fatal("Error accesing to cache map with the given key")
 	}
 
-	td = AddDefaultTempData(td)
+	// td = AddDefaultTempData(td)
 	// render template
 	// NOTE: here td is like context object passed in Django templates
 	err := tmpl.Execute(w, td)

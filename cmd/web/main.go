@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/jcardenasc93/go-webapp/pkg/config"
@@ -19,9 +18,12 @@ var sessionMan *scs.SessionManager
 
 func main() {
 	// Session management
-	initSession()
-	// Initilize app based on AppConfig struct
-	initApp()
+	sessionMan = config.InitSession(sessionMan)
+	// Initilize app
+	app.InitApp(serverPort, sessionMan)
+
+	setupTemplates(&app)
+	setupHandlers(&app)
 
 	log.Println(fmt.Sprintf("Starting server on %s", serverPort))
 
@@ -36,11 +38,7 @@ func main() {
 	}
 }
 
-func initApp() {
-	app.Port = serverPort
-	// Allows access session from any handler
-	app.Session = sessionMan
-	app.IsProduction = false
+func setupTemplates(app *config.AppConfig) {
 	// Setup templates config
 	tmplCache, err := render.CreateTemplateCache()
 	if err != nil {
@@ -49,21 +47,13 @@ func initApp() {
 		app.TemplateCache = tmplCache
 		// In a dev env is ok disable cache
 		app.UseCacheTemplates = false
-		// Setup handlers config
-		repo := handlers.NewRepo(&app)
-		handlers.SetupHandlers(repo)
 		// Setup templates
-		render.SetupTemplates(&app)
+		render.SetupTemplates(app)
 	}
 }
 
-func initSession() {
-	sessionMan = scs.New()
-	// Set life time
-	sessionMan.Lifetime = 12 * time.Hour
-	// Persist session even when user leaves site
-	sessionMan.Cookie.Persist = true
-	sessionMan.Cookie.SameSite = http.SameSiteLaxMode
-	// Securing allows to encrypt session but only through https so on dev env doesn't apply
-	sessionMan.Cookie.Secure = app.IsProduction
+func setupHandlers(app *config.AppConfig) {
+	// Setup handlers config
+	repo := handlers.NewRepo(app)
+	handlers.SetupHandlers(repo)
 }

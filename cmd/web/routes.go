@@ -15,6 +15,7 @@ func routing(a *config.AppConfig) http.Handler {
 	mux.Use(middleware.Recoverer)
 	mux.Use(GenCSRFToken)
 	mux.Use(LoadSession)
+
 	// Adds routes
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)

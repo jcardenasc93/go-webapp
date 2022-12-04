@@ -30,7 +30,7 @@ func SetupHandlers(r *Repository) {
 
 // NOTE: Using receivers grant func to access receiver data
 // Home is the home handler
-func (rep Repository) Home(w http.ResponseWriter, r *http.Request) {
+func (rep *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	remoteIP := r.RemoteAddr
 	// Adds visitor remote address to session
 	rep.App.Session.Put(r.Context(), "remoteIP", remoteIP)
@@ -38,7 +38,7 @@ func (rep Repository) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 // About is the about handler
-func (rep Repository) About(w http.ResponseWriter, r *http.Request) {
+func (rep *Repository) About(w http.ResponseWriter, r *http.Request) {
 	stringMap := make(map[string]string)
 	remoteIP := rep.App.Session.GetString(r.Context(), "remoteIP")
 	stringMap["greetings"] = "Hello from Golang"

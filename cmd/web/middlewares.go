@@ -13,7 +13,7 @@ func GenCSRFToken(next http.Handler) http.Handler {
 		HttpOnly: true,
 		Path:     "/",
 		Secure:   app.IsProduction, // dev env not uses https
-		SameSite: http.SameSiteLaxMode,
+		SameSite: app.SameSite,
 	})
 	return tokenHandler
 }
