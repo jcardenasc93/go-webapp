@@ -19,3 +19,4 @@
 
 # static files
 static/*
+*.png
