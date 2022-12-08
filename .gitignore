@@ -20,3 +20,6 @@
 # static files
 static/*
 *.png
+
+# Lsp settup
+tsconfig.json
