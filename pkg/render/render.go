@@ -8,6 +8,7 @@ import (
 
 	"github.com/jcardenasc93/go-webapp/pkg/config"
 	"github.com/jcardenasc93/go-webapp/pkg/models"
+	"github.com/justinas/nosurf"
 )
 
 var app *config.AppConfig
@@ -18,12 +19,13 @@ func SetupTemplates(a *config.AppConfig) {
 }
 
 // AddDefaultTempData adds default data to template data
-func AddDefaultTempData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultTempData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
 // RenderTemplate parses a given template in the ResponseWriter
-func RenderTemplate(w http.ResponseWriter, tmplName string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmplName string, td *models.TemplateData) {
 	var tmplCache map[string]*template.Template
 	if app.UseCacheTemplates {
 		// Get template cache from app config
@@ -40,7 +42,7 @@ func RenderTemplate(w http.ResponseWriter, tmplName string, td *models.TemplateD
 		log.Fatal("Error accesing to cache map with the given key")
 	}
 
-	// td = AddDefaultTempData(td)
+	td = AddDefaultTempData(td, r)
 	// render template
 	// NOTE: here td is like context object passed in Django templates
 	err := tmpl.Execute(w, td)

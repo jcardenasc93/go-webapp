@@ -8,14 +8,15 @@
                 <h2 class="text-center mt-5">Booking</h2>
 
                 <form action="/booking" method="post" novalidate class="needs-validation">
+                    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
                     <div class="row">
                         <div class="col">
                             <div class="row" id="dates">
                                 <div class="col-md-6">
-                                    <input required type="text" class="form-control" id="start" placeholder="Arrival date">
+                                    <input required type="text" class="form-control" name="start" id="start" placeholder="Arrival date">
                                 </div>
                                 <div class="col-md-6">
-                                    <input required type="text" class="form-control" id="end" placeholder="Departure date">
+                                    <input required type="text" class="form-control" name="end" id="end" placeholder="Departure date">
                                 </div>
                             </div>
                         </div>
