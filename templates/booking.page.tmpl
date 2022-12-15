@@ -1,0 +1,40 @@
+{{template "base" .}}
+
+{{define "content"}}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <h2 class="text-center mt-5">Booking</h2>
+
+                <form action="/booking" method="post" novalidate class="needs-validation">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row" id="dates">
+                                <div class="col-md-6">
+                                    <input required type="text" class="form-control" id="start" placeholder="Arrival date">
+                                </div>
+                                <div class="col-md-6">
+                                    <input required type="text" class="form-control" id="end" placeholder="Departure date">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <button type="submit" class="btn btn-primary mt-2 float-right">Search</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+        const dates = document.getElementById("dates")
+        const rangeDates = new DateRangePicker(dates, {
+                format: "yyyy-mm-dd",
+                buttonClass: "btn"
+            })
+    </script>
+{{end}}

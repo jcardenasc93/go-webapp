@@ -19,6 +19,13 @@ func routing(a *config.AppConfig) http.Handler {
 	// Adds routes
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
+	mux.Get("/contact", handlers.Repo.Contact)
+	mux.Get("/majestic-suite", handlers.Repo.Majestic)
+	mux.Get("/comfortable-place", handlers.Repo.Comfortable)
+	mux.Get("/make-reservation", handlers.Repo.MakeReservation)
+
+	mux.Get("/booking", handlers.Repo.Booking)
+	mux.Post("/booking", handlers.Repo.PostBooking)
 
 	// File server
 	fileServer := http.FileServer(http.Dir("./static/"))

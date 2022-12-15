@@ -31,19 +31,41 @@ func SetupHandlers(r *Repository) {
 // NOTE: Using receivers grant func to access receiver data
 // Home is the home handler
 func (rep *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	remoteIP := r.RemoteAddr
 	// Adds visitor remote address to session
-	rep.App.Session.Put(r.Context(), "remoteIP", remoteIP)
 	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 // About is the about handler
 func (rep *Repository) About(w http.ResponseWriter, r *http.Request) {
-	stringMap := make(map[string]string)
-	remoteIP := rep.App.Session.GetString(r.Context(), "remoteIP")
-	stringMap["greetings"] = "Hello from Golang"
-	stringMap["remoteIP"] = remoteIP
-	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
-		StringMap: stringMap,
-	})
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{})
+}
+
+// Booking is the booking handler
+func (rep *Repository) Booking(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "booking.page.tmpl", &models.TemplateData{})
+}
+
+// Majestic is the majestic suite handler
+func (rep *Repository) Majestic(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "majestic-suite.page.tmpl", &models.TemplateData{})
+}
+
+// Comfortable is the comfortable place handler
+func (rep *Repository) Comfortable(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "comfortable-place.page.tmpl", &models.TemplateData{})
+}
+
+// Contact is the comfortable place handler
+func (rep *Repository) Contact(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "contact.page.tmpl", &models.TemplateData{})
+}
+
+// MakeReservation is the comfortable place handler
+func (rep *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "make-reservation.page.tmpl", &models.TemplateData{})
+}
+
+// PostBooking is handler to create a reservation
+func (rep *Repository) PostBooking(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "make-reservation.page.tmpl", &models.TemplateData{})
 }
