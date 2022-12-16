@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/jcardenasc93/go-webapp/pkg/config"
-	"github.com/jcardenasc93/go-webapp/pkg/handlers"
-	"github.com/jcardenasc93/go-webapp/pkg/render"
+	"github.com/jcardenasc93/go-webapp/internal/config"
+	"github.com/jcardenasc93/go-webapp/internal/handlers"
+	"github.com/jcardenasc93/go-webapp/internal/render"
 )
 
 const serverPort = ":8000"

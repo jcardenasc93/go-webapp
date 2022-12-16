@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
-	"github.com/jcardenasc93/go-webapp/pkg/config"
-	"github.com/jcardenasc93/go-webapp/pkg/models"
-	"github.com/jcardenasc93/go-webapp/pkg/render"
+	"github.com/jcardenasc93/go-webapp/internal/config"
+	"github.com/jcardenasc93/go-webapp/internal/models"
+	"github.com/jcardenasc93/go-webapp/internal/render"
 )
 
 // NOTE: Using repository pattern allows to swap componets around the app without huge changes in code base
@@ -72,4 +74,26 @@ func (rep *Repository) PostBooking(w http.ResponseWriter, r *http.Request) {
 	end := r.Form.Get("end")
 
 	w.Write([]byte(fmt.Sprintf("Start date: %s\nEnd date: %s", start, end)))
+}
+
+type availabilityResponse struct {
+	OK  bool   `json:"ok"`
+	Msg string `json:"message"`
+}
+
+// BookingJSON is handler to create a reservation
+func (rep *Repository) BookingJSON(w http.ResponseWriter, r *http.Request) {
+	resp := availabilityResponse{
+		OK:  true,
+		Msg: "Available",
+	}
+
+	out, err := json.MarshalIndent(resp, "", "    ")
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(out)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
 }

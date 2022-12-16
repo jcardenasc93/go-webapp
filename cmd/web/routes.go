@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/jcardenasc93/go-webapp/pkg/config"
-	"github.com/jcardenasc93/go-webapp/pkg/handlers"
+	"github.com/jcardenasc93/go-webapp/internal/config"
+	"github.com/jcardenasc93/go-webapp/internal/handlers"
 )
 
 func routing(a *config.AppConfig) http.Handler {
@@ -26,6 +26,7 @@ func routing(a *config.AppConfig) http.Handler {
 
 	mux.Get("/booking", handlers.Repo.Booking)
 	mux.Post("/booking", handlers.Repo.PostBooking)
+	mux.Post("/booking-json", handlers.Repo.BookingJSON)
 
 	// File server
 	fileServer := http.FileServer(http.Dir("./static/"))

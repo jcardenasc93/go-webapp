@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jcardenasc93/go-webapp/pkg/config"
-	"github.com/jcardenasc93/go-webapp/pkg/models"
+	"github.com/jcardenasc93/go-webapp/internal/config"
+	"github.com/jcardenasc93/go-webapp/internal/models"
 	"github.com/justinas/nosurf"
 )
 
