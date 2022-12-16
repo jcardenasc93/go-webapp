@@ -8,6 +8,7 @@ import (
 
 	"github.com/jcardenasc93/go-webapp/internal/config"
 	"github.com/jcardenasc93/go-webapp/internal/models"
+	"github.com/jcardenasc93/go-webapp/internal/models/forms"
 	"github.com/jcardenasc93/go-webapp/internal/render"
 )
 
@@ -65,7 +66,50 @@ func (rep *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 
 // MakeReservation is the comfortable place handler
 func (rep *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+	var initReservation models.Reservation
+	data := make(map[string]interface{})
+	data["reservation"] = initReservation
+
+	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+		Data: data,
+	})
+}
+
+// PostMakeReservation handles the post make reservation form
+func (rep *Repository) PostMakeReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	// reservation holds actual form state
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("first_name"),
+		LastName:  r.Form.Get("last_name"),
+		Email:     r.Form.Get("email"),
+		Phone:     r.Form.Get("phone"),
+	}
+
+	// Makes form validation
+	form := forms.New(r.PostForm)
+	form.Required("first_name", "last_name", "email", "phone")
+	form.MinLenght("first_name", 3)
+	form.MinLenght("last_name", 3)
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		// Not valid form renders the form in its current state
+		// with form errors
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+		render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
 }
 
 // PostBooking is handler to create a reservation

@@ -22,6 +22,8 @@ func routing(a *config.AppConfig) http.Handler {
 	mux.Get("/contact", handlers.Repo.Contact)
 	mux.Get("/majestic-suite", handlers.Repo.Majestic)
 	mux.Get("/comfortable-place", handlers.Repo.Comfortable)
+
+	mux.Post("/make-reservation", handlers.Repo.PostMakeReservation)
 	mux.Get("/make-reservation", handlers.Repo.MakeReservation)
 
 	mux.Get("/booking", handlers.Repo.Booking)
