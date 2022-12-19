@@ -18,7 +18,6 @@
 .tool-versions
 
 # static files
-static/*
 *.png
 
 # Lsp settup
