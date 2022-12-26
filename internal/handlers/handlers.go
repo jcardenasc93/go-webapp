@@ -110,6 +110,12 @@ func (rep *Repository) PostMakeReservation(w http.ResponseWriter, r *http.Reques
 		})
 		return
 	}
+
+	// Put reservation in current session
+	rep.App.Session.Put(r.Context(), "reservation", reservation)
+
+	// Redirect
+	http.Redirect(w, r, "/booking-summary", http.StatusSeeOther)
 }
 
 // PostBooking is handler to create a reservation
@@ -140,4 +146,23 @@ func (rep *Repository) BookingJSON(w http.ResponseWriter, r *http.Request) {
 	log.Println(out)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
+}
+
+// BookingSummary is handler for display a reservation summary
+func (rep *Repository) BookingSummary(w http.ResponseWriter, r *http.Request) {
+	reservation, ok := rep.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		log.Println("Cannot retrieve a valid reservation data")
+		rep.App.Session.Put(r.Context(), "error", "Cannot retrieve a valid reservation")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	rep.App.Session.Remove(r.Context(), "reservation") // Removes reservation after successfuly stored
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.RenderTemplate(w, r, "booking-summary.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }

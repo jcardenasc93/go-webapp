@@ -12,6 +12,7 @@ import (
 )
 
 var app *config.AppConfig
+var functions = template.FuncMap{}
 
 // SetupTemplates setup templates package based on AppConfig
 func SetupTemplates(a *config.AppConfig) {
@@ -68,7 +69,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	}
 	for _, page := range pages {
 		name := filepath.Base(page)
-		tmplSetup, err := template.New(name).ParseFiles(page)
+		tmplSetup, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
 			log.Println("Error scaning templates directory:\n", err)
 			return templateCache, err
