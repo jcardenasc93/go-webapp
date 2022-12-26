@@ -127,6 +127,18 @@
             })
         }
 
+        {{with .FlashMsg}}
+        notify("{{.}}", "success")
+        {{end}}
+
+        {{with .ErrorMsg}}
+        notify("{{.}}", "error")
+        {{end}}
+
+        {{with .Warning}}
+        notify("{{.}}", "error")
+        {{end}}
+
         function Prompt() {
             let toast = function (c) {
                 const{
@@ -166,7 +178,6 @@
                     text: msg,
                     footer: footer,
                 })
-
             }
 
             let error = function (c) {
@@ -182,7 +193,21 @@
                     text: msg,
                     footer: footer,
                 })
+            }
 
+            let warning = function (c) {
+                const {
+                    msg = "",
+                    title = "",
+                    footer = "",
+                } = c
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: title,
+                    text: msg,
+                    footer: footer,
+                })
             }
 
             async function custom(c) {
