@@ -1,6 +1,7 @@
 package render
 
 import (
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 
 var app *config.AppConfig
 var functions = template.FuncMap{}
+var templsDir = "./templates"
 
 // SetupTemplates setup templates package based on AppConfig
 func SetupTemplates(a *config.AppConfig) {
@@ -31,7 +33,7 @@ func AddDefaultTempData(td *models.TemplateData, r *http.Request) *models.Templa
 }
 
 // RenderTemplate parses a given template in the ResponseWriter
-func RenderTemplate(w http.ResponseWriter, r *http.Request, tmplName string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmplName string, td *models.TemplateData) error {
 	var tmplCache map[string]*template.Template
 	if app.UseCacheTemplates {
 		// Get template cache from app config
@@ -45,7 +47,8 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmplName string, td 
 	// get template
 	tmpl, ok := tmplCache[tmplName]
 	if !ok {
-		log.Fatal("Error accesing to cache map with the given key")
+		errMsg := "Error accesing to cache map with the given key"
+		return errors.New(errMsg)
 	}
 
 	td = AddDefaultTempData(td, r)
@@ -54,38 +57,36 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmplName string, td 
 	err := tmpl.Execute(w, td)
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	templateCache := map[string]*template.Template{}
-	templsDir := "./templates"
 
 	// Looks for all *pages.tmpl files in ./templates
 	pages, err := filepath.Glob(templsDir + "/*.page.tmpl")
 	if err != nil {
-		log.Println("Error scaning templates directory:\n", err)
 		return templateCache, err
 	}
 	for _, page := range pages {
 		name := filepath.Base(page)
 		tmplSetup, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
-			log.Println("Error scaning templates directory:\n", err)
 			return templateCache, err
 		}
 
 		// Look for layouts
 		matches, err := filepath.Glob(templsDir + "/*.layout.tmpl")
 		if err != nil {
-			log.Println("Error scaning templates directory:\n", err)
 			return templateCache, err
 		}
 		if len(matches) > 0 {
 			// Match each page template with required layouts
 			tmplSetup, err = tmplSetup.ParseGlob(templsDir + "/*.layout.tmpl")
 			if err != nil {
-				log.Println("Error scaning templates directory:\n", err)
 				return templateCache, err
 			}
 		}
