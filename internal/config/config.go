@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -15,6 +16,7 @@ type AppConfig struct {
 	TemplateCache     map[string]*template.Template
 	UseCacheTemplates bool
 	InfoLog           *log.Logger
+	ErrorLog          *log.Logger
 	IsProduction      bool
 	Session           *scs.SessionManager
 	SameSite          http.SameSite
@@ -26,6 +28,10 @@ func (app *AppConfig) InitApp(serverPort string, sessionMan *scs.SessionManager)
 	// Allows access session from any handler
 	app.Session = sessionMan
 	app.IsProduction = false
+	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	if !(app.IsProduction) {
+		app.ErrorLog = log.New(os.Stdout, "==============\nERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	}
 	app.SameSite = http.SameSiteLaxMode
 	// Securing allows to encrypt session but only through https so on dev env doesn't apply
 	app.Session.Cookie.Secure = app.IsProduction

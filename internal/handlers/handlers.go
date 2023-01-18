@@ -3,10 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/jcardenasc93/go-webapp/internal/config"
+	"github.com/jcardenasc93/go-webapp/internal/config/helpers"
 	"github.com/jcardenasc93/go-webapp/internal/models"
 	"github.com/jcardenasc93/go-webapp/internal/models/forms"
 	"github.com/jcardenasc93/go-webapp/internal/render"
@@ -80,7 +80,7 @@ func (rep *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
 func (rep *Repository) PostMakeReservation(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w, err)
 		return
 	}
 
@@ -140,10 +140,11 @@ func (rep *Repository) BookingJSON(w http.ResponseWriter, r *http.Request) {
 
 	out, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w, err)
+		return
 	}
 
-	log.Println(out)
+	rep.App.InfoLog.Println(out)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
 }
@@ -152,7 +153,7 @@ func (rep *Repository) BookingJSON(w http.ResponseWriter, r *http.Request) {
 func (rep *Repository) BookingSummary(w http.ResponseWriter, r *http.Request) {
 	reservation, ok := rep.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		log.Println("Cannot retrieve a valid reservation data")
+		rep.App.ErrorLog.Println("Cannot retrieve a valid reservation")
 		rep.App.Session.Put(r.Context(), "error", "Cannot retrieve a valid reservation")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return

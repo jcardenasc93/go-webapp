@@ -8,6 +8,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/jcardenasc93/go-webapp/internal/config"
+	"github.com/jcardenasc93/go-webapp/internal/config/helpers"
 	"github.com/jcardenasc93/go-webapp/internal/handlers"
 	"github.com/jcardenasc93/go-webapp/internal/models"
 	"github.com/jcardenasc93/go-webapp/internal/render"
@@ -72,6 +73,7 @@ func run() error {
 		return err
 	}
 	setupHandlers(&app)
+	helpers.NewHelpers(&app)
 
 	return nil
 }
