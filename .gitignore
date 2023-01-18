@@ -22,3 +22,6 @@
 
 # Lsp settup
 tsconfig.json
+
+# Soda database config
+database.yml
